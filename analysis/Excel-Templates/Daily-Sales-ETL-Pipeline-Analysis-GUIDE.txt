@@ -1,0 +1,168 @@
+
+EXCEL ANALYSIS TEMPLATE
+Daily-Sales-ETL-Pipeline-Analysis
+
+========================================
+PURPOSE
+========================================
+Automated nightly batch loads
+
+This Excel template provides interactive analysis capabilities
+using Pivot Tables, Charts, and PowerPivot (Excel 2013).
+
+========================================
+TEMPLATE STRUCTURE
+========================================
+
+Sheet 1: Dashboard
+- Summary KPIs
+- Key metrics
+- Charts and visualizations
+- Slicers for filtering
+
+Sheet 2: Data
+- Raw data from database
+- Refreshable connection
+- Data validation
+
+Sheet 3: Pivot Analysis
+- Pivot tables
+- Interactive analysis
+- Drill-down capabilities
+
+Sheet 4: Charts
+- Trend analysis
+- Comparison charts
+- Distribution charts
+
+Sheet 5: PowerPivot (Excel 2013)
+- Data model
+- DAX calculations
+- Relationships
+
+========================================
+CONNECTING TO DATABASE
+========================================
+
+Method 1: Using Data Connection
+1. Data tab > From Other Sources
+2. From SQL Server
+3. Enter server name and database
+4. Select tables
+5. Load to Excel
+
+Method 2: Using PowerPivot (Excel 2013)
+1. PowerPivot tab > Manage
+2. Get External Data > From Database
+3. From SQL Server
+4. Enter connection details
+5. Select tables
+6. Create relationships
+
+========================================
+DAX FORMULAS (PowerPivot)
+========================================
+
+Total Sales:
+=SUM(FactSales[SalesAmount])
+
+Year-to-Date Sales:
+=TOTALYTD(SUM(FactSales[SalesAmount]), DimDate[Date])
+
+Previous Year Sales:
+=CALCULATE(
+    SUM(FactSales[SalesAmount]),
+    SAMEPERIODLASTYEAR(DimDate[Date])
+)
+
+Year-over-Year Growth:
+=DIVIDE(
+    [Total Sales] - [Previous Year Sales],
+    [Previous Year Sales]
+)
+
+Average Order Value:
+=DIVIDE(
+    SUM(FactSales[SalesAmount]),
+    COUNTROWS(FactSales)
+)
+
+Top 10 Products:
+=CALCULATE(
+    SUM(FactSales[SalesAmount]),
+    TOPN(10, DimProduct, [Total Sales])
+)
+
+========================================
+PIVOT TABLE EXAMPLES
+========================================
+
+Sales by Category:
+- Rows: Product Category
+- Values: Sum of Sales Amount
+- Filters: Date Range
+
+Monthly Trend:
+- Rows: Month
+- Values: Sum of Sales Amount
+- Show: Line Chart
+
+Regional Performance:
+- Rows: Region
+- Columns: Quarter
+- Values: Sum of Sales Amount
+
+========================================
+CHART RECOMMENDATIONS
+========================================
+
+1. Column Chart - Category comparison
+2. Line Chart - Trend over time
+3. Pie Chart - Distribution
+4. Combo Chart - Multiple metrics
+5. Sparklines - Inline trends
+
+========================================
+REFRESH DATA
+========================================
+
+Manual Refresh:
+1. Data tab > Refresh All
+2. Or right-click connection > Refresh
+
+Automatic Refresh:
+1. Data tab > Connections
+2. Properties
+3. Set refresh on open
+4. Set refresh interval
+
+========================================
+TIPS & BEST PRACTICES
+========================================
+
+1. Always refresh before analysis
+2. Use named ranges
+3. Document formulas
+4. Save templates
+5. Use data validation
+6. Apply conditional formatting
+7. Create separate analysis sheets
+8. Backup regularly
+
+========================================
+VBA MACROS (Optional)
+========================================
+
+Auto Refresh on Open:
+Sub Workbook_Open()
+    ActiveWorkbook.RefreshAll
+End Sub
+
+Export to PDF:
+Sub ExportToPDF()
+    ActiveSheet.ExportAsFixedFormat _
+        Type:=xlTypePDF, _
+        Filename:="Report.pdf"
+End Sub
+
+========================================

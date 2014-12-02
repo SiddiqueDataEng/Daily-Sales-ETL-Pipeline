@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition">
+  <Description>Automated nightly batch loads</Description>
+  <Author>Data Engineering Team</Author>
+  <Width>8.5in</Width>
+  <PageHeight>11in</PageHeight>
+  <PageWidth>8.5in</PageWidth>
+  <LeftMargin>0.5in</LeftMargin>
+  <RightMargin>0.5in</RightMargin>
+  <TopMargin>0.5in</TopMargin>
+  <BottomMargin>0.5in</BottomMargin>
+  
+  <DataSources>
+    <DataSource Name="MainDataSource">
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString>Data Source=localhost;Initial Catalog=DatabaseName</ConnectString>
+        <IntegratedSecurity>true</IntegratedSecurity>
+      </ConnectionProperties>
+    </DataSource>
+  </DataSources>
+  
+  <DataSets>
+    <DataSet Name="MainDataSet">
+      <Query>
+        <DataSourceName>MainDataSource</DataSourceName>
+        <CommandText>
+          SELECT 
+            RecordID,
+            RecordName,
+            RecordDate,
+            Amount,
+            Status
+          FROM dbo.MainRecords
+          WHERE RecordDate BETWEEN @StartDate AND @EndDate
+          ORDER BY RecordDate DESC
+        </CommandText>
+        <QueryParameters>
+          <QueryParameter Name="@StartDate">
+            <Value>=Parameters!StartDate.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@EndDate">
+            <Value>=Parameters!EndDate.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+      </Query>
+      <Fields>
+        <Field Name="RecordID"><DataField>RecordID</DataField></Field>
+        <Field Name="RecordName"><DataField>RecordName</DataField></Field>
+        <Field Name="RecordDate"><DataField>RecordDate</DataField></Field>
+        <Field Name="Amount"><DataField>Amount</DataField></Field>
+        <Field Name="Status"><DataField>Status</DataField></Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  
+  <ReportParameters>
+    <ReportParameter Name="StartDate">
+      <DataType>DateTime</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>=DateAdd("d", -30, Today())</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Start Date</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="EndDate">
+      <DataType>DateTime</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>=Today()</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>End Date</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  
+  <Body>
+    <ReportItems>
+      <Textbox Name="ReportTitle">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Daily-Sales-ETL-Pipeline-Report</Value>
+                <Style>
+                  <FontFamily>Arial</FontFamily>
+                  <FontSize>16pt</FontSize>
+                  <FontWeight>Bold</FontWeight>
+                  <Color>#003366</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+          </Paragraph>
+        </Paragraphs>
+        <Top>0.25in</Top>
+        <Left>0.25in</Left>
+        <Height>0.5in</Height>
+        <Width>7.5in</Width>
+      </Textbox>
+      
+      <Tablix Name="MainTable">
+        <TablixBody>
+          <TablixColumns>
+            <TablixColumn><Width>1.5in</Width></TablixColumn>
+            <TablixColumn><Width>2.5in</Width></TablixColumn>
+            <TablixColumn><Width>1.5in</Width></TablixColumn>
+            <TablixColumn><Width>1in</Width></TablixColumn>
+            <TablixColumn><Width>1in</Width></TablixColumn>
+          </TablixColumns>
+          <TablixRows>
+            <TablixRow>
+              <Height>0.25in</Height>
+              <TablixCells>
+                <TablixCell><CellContents><Textbox Name="HeaderID"><Value>ID</Value></Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="HeaderName"><Value>Name</Value></Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="HeaderDate"><Value>Date</Value></Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="HeaderAmount"><Value>Amount</Value></Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="HeaderStatus"><Value>Status</Value></Textbox></CellContents></TablixCell>
+              </TablixCells>
+            </TablixRow>
+            <TablixRow>
+              <Height>0.25in</Height>
+              <TablixCells>
+                <TablixCell><CellContents><Textbox Name="RecordID"><Value>=Fields!RecordID.Value</Value></Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="RecordName"><Value>=Fields!RecordName.Value</Value></Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="RecordDate"><Value>=Fields!RecordDate.Value</Value></Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="Amount"><Value>=Fields!Amount.Value</Value></Textbox></CellContents></TablixCell>
+                <TablixCell><CellContents><Textbox Name="Status"><Value>=Fields!Status.Value</Value></Textbox></CellContents></TablixCell>
+              </TablixCells>
+            </TablixRow>
+          </TablixRows>
+        </TablixBody>
+        <DataSetName>MainDataSet</DataSetName>
+        <Top>1in</Top>
+        <Left>0.25in</Left>
+        <Height>1in</Height>
+        <Width>7.5in</Width>
+      </Tablix>
+    </ReportItems>
+    <Height>4in</Height>
+  </Body>
+</Report>

@@ -1,0 +1,146 @@
+
+SSIS PACKAGE DOCUMENTATION
+Daily Sales ETL Pipeline
+
+========================================
+PACKAGE OVERVIEW
+========================================
+
+Package Name: Daily-Sales-ETL-Pipeline.dtsx
+Purpose: Daily sales data integration
+SQL Server Version: 2008 R2 / 2012
+Created: 2011-2014
+
+========================================
+PACKAGE STRUCTURE
+========================================
+
+Control Flow:
+1. Execute SQL Task - Truncate staging tables
+2. Data Flow Task - Extract from source
+3. Data Flow Task - Transform and cleanse
+4. Data Flow Task - Load to destination
+5. Execute SQL Task - Update control tables
+6. Send Mail Task - Notify on completion/error
+
+Data Flow Components:
+- OLE DB Source
+- Data Conversion
+- Derived Column
+- Lookup Transformation
+- Conditional Split
+- Aggregate
+- Sort
+- Merge Join
+- OLE DB Destination
+
+========================================
+CONFIGURATION
+========================================
+
+Connection Managers:
+- SourceDB: Source database connection
+- DestinationDB: Destination database connection
+- StagingDB: Staging database connection
+- FlatFileConnection: For file sources
+
+Variables:
+- BatchID: Current batch identifier
+- StartDate: Batch start date
+- EndDate: Batch end date
+- RowCount: Number of rows processed
+- ErrorCount: Number of errors
+
+Configurations (dtsConfig file):
+- Connection strings
+- File paths
+- Email settings
+- Batch parameters
+
+========================================
+ERROR HANDLING
+========================================
+
+Event Handlers:
+- OnError: Log error and send email
+- OnWarning: Log warning
+- OnTaskFailed: Rollback and notify
+
+Error Outputs:
+- Redirect error rows to error table
+- Log error details
+- Continue processing valid rows
+
+Logging:
+- Log to SQL Server table
+- Log to text file
+- Include package execution details
+
+========================================
+DEPLOYMENT
+========================================
+
+Development:
+1. Create package in BIDS/SSDT
+2. Test with sample data
+3. Check into TFS/SVN
+
+Deployment to Production:
+1. Copy .dtsx file to server
+2. Copy .dtsConfig file
+3. Update configuration file
+4. Create SQL Agent job
+5. Test execution
+6. Schedule job
+7. Monitor first runs
+
+SQL Agent Job Setup:
+- Job Name: Daily-Sales-ETL-Pipeline_Daily
+- Step Type: SQL Server Integration Services Package
+- Package Source: File System
+- Package: Path to .dtsx file
+- Configuration: Path to .dtsConfig file
+- Schedule: Daily at 2:00 AM
+- Notifications: Email on failure
+
+========================================
+MONITORING
+========================================
+
+Check Execution:
+- SQL Agent Job History
+- SSIS Catalog (if using 2012)
+- Custom logging tables
+- Windows Event Log
+
+Performance Metrics:
+- Execution time
+- Rows processed
+- Errors encountered
+- Resource usage
+
+Alerts:
+- Email on failure
+- Email on long-running
+- Email on data quality issues
+
+========================================
+MAINTENANCE
+========================================
+
+Daily:
+- Check job execution status
+- Review error logs
+- Verify row counts
+
+Weekly:
+- Review performance metrics
+- Check disk space
+- Archive old logs
+
+Monthly:
+- Review and optimize slow packages
+- Update documentation
+- Test disaster recovery
+
+========================================
